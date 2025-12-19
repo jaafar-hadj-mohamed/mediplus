@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation - MediPlus{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_services') }}">Services</a></li>
+                    <li class="breadcrumb-item active">Nouvelle réservation</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">📅 Prendre un rendez-vous</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if service %}
+                        <div class="alert alert-info">
+                            <strong>Service sélectionné :</strong> {{ service.nom }}<br>
+                            <small class="text-muted">
+                                Durée : {{ service.duree }} min | Prix : {{ service.prix }} TND
+                            </small>
+                        </div>
+                    {% endif %}
+
+                    {{ form_start(form) }}
+
+                    <div class="mb-4">
+                        {{ form_label(form.service) }}
+                        {{ form_widget(form.service) }}
+                        {{ form_errors(form.service) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.dateReservation) }}
+                            {{ form_widget(form.dateReservation) }}
+                            {{ form_errors(form.dateReservation) }}
+                            <small class="text-muted">Choisissez une date future</small>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.heureReservation) }}
+                            {{ form_widget(form.heureReservation) }}
+                            {{ form_errors(form.heureReservation) }}
+                            <small class="text-muted">Entre 08h00 et 18h00</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.commentaire) }}
+                        {{ form_widget(form.commentaire) }}
+                        {{ form_errors(form.commentaire) }}
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Important :</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Votre demande sera en attente de confirmation</li>
+                            <li>Vous recevrez une notification une fois validée</li>
+                            <li>Vous pouvez annuler jusqu'à 24h avant le rendez-vous</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            ✅ Confirmer ma demande de rendez-vous
+                        </button>
+                        <a href="{{ path('app_services') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -25,10 +25,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_services') }}">Services</a>
+                </li>
 
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Mes Rendez-vous</a>
+                        <a class="nav-link" href="{{ path('app_reservation_mes_reservations') }}">Mes Rendez-vous</a>
                     </li>
 
                     {% if is_granted('ROLE_ADMIN') %}

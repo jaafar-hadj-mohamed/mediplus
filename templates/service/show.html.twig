@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ service.nom }} - MediPlus{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_services') }}">Services</a></li>
+            <li class="breadcrumb-item active">{{ service.nom }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="display-5 text-primary mb-4">{{ service.nom }}</h1>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">📋 Description</h5>
+                        <p class="lead">{{ service.description }}</p>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="display-6 text-primary mb-2">⏱️</div>
+                                <h6 class="text-muted mb-0">Durée</h6>
+                                <p class="h5 mb-0">{{ service.duree }} min</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="display-6 text-success mb-2">💰</div>
+                                <h6 class="text-muted mb-0">Tarif</h6>
+                                <p class="h5 mb-0">{{ service.prix }} TND</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <div class="display-6 text-info mb-2">✅</div>
+                                <h6 class="text-muted mb-0">Statut</h6>
+                                <p class="h5 mb-0">Disponible</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-center mb-4">Prendre rendez-vous</h5>
+
+                    {% if app.user %}
+                        <div class="d-grid gap-3">
+                            <a href="{{ path('app_reservation_new', {service: service.id}) }}"
+                               class="btn btn-primary btn-lg">
+                                📅 Réserver maintenant
+                            </a>
+                            <a href="{{ path('app_services') }}"
+                               class="btn btn-outline-secondary">
+                                ← Retour aux services
+                            </a>
+                        </div>
+
+                        <div class="alert alert-info mt-4 mb-0">
+                            <small>
+                                <strong>ℹ️ Information :</strong><br>
+                                Vous recevrez une confirmation par email une fois votre réservation validée.
+                            </small>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning text-center">
+                            <p class="mb-3">🔒 Connectez-vous pour réserver</p>
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_login') }}" class="btn btn-primary">
+                                    Se connecter
+                                </a>
+                                <a href="{{ path('app_register') }}" class="btn btn-outline-primary">
+                                    Créer un compte
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
