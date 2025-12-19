@@ -1,0 +1,153 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Réservation #{{ reservation.id }}{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_reservation_index') }}">Réservations</a></li>
+            <li class="breadcrumb-item active">Réservation #{{ reservation.id }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">📋 Réservation #{{ reservation.id }}</h1>
+        <div>
+            {% if reservation.statut == 'en_attente' %}
+                <span class="badge bg-warning text-dark fs-6">⏳ En attente de validation</span>
+            {% elseif reservation.statut == 'confirme' %}
+                <span class="badge bg-success fs-6">✅ Confirmée</span>
+            {% elseif reservation.statut == 'annule' %}
+                <span class="badge bg-danger fs-6">❌ Annulée</span>
+            {% elseif reservation.statut == 'termine' %}
+                <span class="badge bg-secondary fs-6">✔️ Terminée</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informations principales -->
+        <div class="col-lg-8">
+            <!-- Informations patient -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Informations Patient</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Nom complet :</strong><br>{{ reservation.user.prenom }} {{ reservation.user.nom }}</p>
+                            <p><strong>Email :</strong><br>{{ reservation.user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            {% if reservation.user.telephone %}
+                                <p><strong>Téléphone :</strong><br>{{ reservation.user.telephone }}</p>
+                            {% endif %}
+                            {% if reservation.user.dateNaissance %}
+                                <p><strong>Date de naissance :</strong><br>{{ reservation.user.dateNaissance|date('d/m/Y') }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails du rendez-vous -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Détails du Rendez-vous</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Service :</strong><br>{{ reservation.service.nom }}</p>
+                            <p><strong>Date :</strong><br>{{ reservation.dateReservation|date('d/m/Y') }}</p>
+                            <p><strong>Heure :</strong><br>{{ reservation.heureReservation|date('H:i') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Durée :</strong><br>{{ reservation.service.duree }} minutes</p>
+                            <p><strong>Prix :</strong><br>{{ reservation.service.prix }} TND</p>
+                            <p><strong>Demandé le :</strong><br>{{ reservation.createdAt|date('d/m/Y à H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commentaire patient -->
+            {% if reservation.commentaire %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-chat-left-text"></i> Commentaire du patient</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">{{ reservation.commentaire }}</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Remarque admin -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Remarque administrative</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('admin_reservation_remarque', {id: reservation.id}) }}">
+                        <div class="mb-3">
+                        <textarea name="remarque" class="form-control" rows="3"
+                                  placeholder="Ajouter une remarque visible par le patient...">{{ reservation.remarqueAdmin }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Enregistrer la remarque
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> Actions</h5>
+                </div>
+                <div class="card-body">
+                    {% if reservation.statut == 'en_attente' %}
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('admin_reservation_confirm', {id: reservation.id}) }}"
+                               class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Confirmer
+                            </a>
+                            <a href="{{ path('admin_reservation_refuse', {id: reservation.id}) }}"
+                               class="btn btn-danger"
+                               onclick="return confirm('Êtes-vous sûr de vouloir refuser cette réservation ?')">
+                                <i class="bi bi-x-circle"></i> Refuser
+                            </a>
+                        </div>
+                    {% elseif reservation.statut == 'confirme' %}
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('admin_reservation_complete', {id: reservation.id}) }}"
+                               class="btn btn-secondary btn-lg">
+                                <i class="bi bi-check-all"></i> Marquer comme terminé
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('admin_reservation_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Retour à la liste
+                        </a>
+
+                        <form method="post" action="{{ path('admin_reservation_delete', {id: reservation.id}) }}"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement cette réservation ?')">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

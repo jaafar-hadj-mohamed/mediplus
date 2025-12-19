@@ -1,0 +1,214 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard - Administration{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">📊 Tableau de bord</h1>
+        <div class="text-muted">
+            <i class="bi bi-calendar3"></i> {{ "now"|date("d/m/Y") }}
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card border-primary shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Réservations</p>
+                            <h2 class="mb-0">{{ totalReservations }}</h2>
+                        </div>
+                        <div class="fs-1 text-primary">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card border-success shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Services Actifs</p>
+                            <h2 class="mb-0">{{ totalServices }}</h2>
+                        </div>
+                        <div class="fs-1 text-success">
+                            <i class="bi bi-heart-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card border-info shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Patients Inscrits</p>
+                            <h2 class="mb-0">{{ totalUsers }}</h2>
+                        </div>
+                        <div class="fs-1 text-info">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Réservations en attente -->
+    {% if reservationsEnAttente is not empty %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Réservations en attente ({{ reservationsEnAttente|length }})
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Service</th>
+                            <th>Date & Heure</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for reservation in reservationsEnAttente %}
+                            <tr>
+                                <td>
+                                    <strong>{{ reservation.user.prenom }} {{ reservation.user.nom }}</strong><br>
+                                    <small class="text-muted">{{ reservation.user.email }}</small>
+                                </td>
+                                <td>{{ reservation.service.nom }}</td>
+                                <td>
+                                    {{ reservation.dateReservation|date('d/m/Y') }}<br>
+                                    <small class="text-muted">{{ reservation.heureReservation|date('H:i') }}</small>
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_reservation_show', {id: reservation.id}) }}"
+                                       class="btn btn-sm btn-primary">
+                                        Gérer
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Réservations d'aujourd'hui -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-calendar-day"></i>
+                Rendez-vous du jour ({{ reservationsAujourdhui|length }})
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if reservationsAujourdhui is empty %}
+                <p class="text-center text-muted my-4">Aucun rendez-vous prévu aujourd'hui</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Heure</th>
+                            <th>Patient</th>
+                            <th>Service</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for reservation in reservationsAujourdhui %}
+                            <tr>
+                                <td><strong>{{ reservation.heureReservation|date('H:i') }}</strong></td>
+                                <td>{{ reservation.user.prenom }} {{ reservation.user.nom }}</td>
+                                <td>{{ reservation.service.nom }}</td>
+                                <td>
+                                    {% if reservation.statut == 'confirme' %}
+                                        <span class="badge bg-success">Confirmé</span>
+                                    {% elseif reservation.statut == 'en_attente' %}
+                                        <span class="badge bg-warning">En attente</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ reservation.statut }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_reservation_show', {id: reservation.id}) }}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Voir
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Dernières réservations -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i>
+                Dernières réservations
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>Date demande</th>
+                        <th>Patient</th>
+                        <th>Service</th>
+                        <th>RDV prévu</th>
+                        <th>Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in dernieresReservations %}
+                        <tr>
+                            <td>{{ reservation.createdAt|date('d/m/Y H:i') }}</td>
+                            <td>{{ reservation.user.prenom }} {{ reservation.user.nom }}</td>
+                            <td>{{ reservation.service.nom }}</td>
+                            <td>{{ reservation.dateReservation|date('d/m/Y') }} {{ reservation.heureReservation|date('H:i') }}</td>
+                            <td>
+                                {% if reservation.statut == 'confirme' %}
+                                    <span class="badge bg-success">Confirmé</span>
+                                {% elseif reservation.statut == 'en_attente' %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% elseif reservation.statut == 'annule' %}
+                                    <span class="badge bg-danger">Annulé</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ reservation.statut }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ path('admin_reservation_index') }}" class="btn btn-sm btn-outline-primary">
+                Voir toutes les réservations
+            </a>
+        </div>
+    </div>
+{% endblock %}

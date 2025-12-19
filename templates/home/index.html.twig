@@ -10,33 +10,43 @@
 
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 text-primary">📅</div>
-                    <h5 class="card-title mt-3">Prendre Rendez-vous</h5>
-                    <p class="card-text">Réservez facilement vos consultations en ligne</p>
+            <a href="{{ path('app_services') }}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body text-center">
+                        <div class="display-1 text-primary">📅</div>
+                        <h5 class="card-title mt-3 text-dark">Prendre Rendez-vous</h5>
+                        <p class="card-text text-muted">Réservez facilement vos consultations en ligne</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 text-primary">👨‍⚕️</div>
-                    <h5 class="card-title mt-3">Services Médicaux</h5>
-                    <p class="card-text">Découvrez nos différentes consultations</p>
+            <a href="{{ path('app_services') }}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body text-center">
+                        <div class="display-1 text-primary">👨‍⚕️</div>
+                        <h5 class="card-title mt-3 text-dark">Services Médicaux</h5>
+                        <p class="card-text text-muted">Découvrez nos différentes consultations</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 text-primary">📋</div>
-                    <h5 class="card-title mt-3">Suivi Personnel</h5>
-                    <p class="card-text">Gérez vos rendez-vous et votre historique</p>
-                </div>
-            </div>
+            {% if app.user %}
+            <a href="{{ path('app_reservation_mes_reservations') }}" class="text-decoration-none">
+                {% else %}
+                <a href="{{ path('app_login') }}" class="text-decoration-none">
+                    {% endif %}
+                    <div class="card shadow-sm h-100 hover-card">
+                        <div class="card-body text-center">
+                            <div class="display-1 text-primary">📋</div>
+                            <h5 class="card-title mt-3 text-dark">Suivi Personnel</h5>
+                            <p class="card-text text-muted">Gérez vos rendez-vous et votre historique</p>
+                        </div>
+                    </div>
+                </a>
         </div>
     </div>
 
@@ -50,5 +60,30 @@
                 Se connecter
             </a>
         </div>
+    {% else %}
+        <div class="text-center mt-5">
+            <h3 class="mb-4">Que souhaitez-vous faire ?</h3>
+            <a href="{{ path('app_services') }}" class="btn btn-primary btn-lg me-3">
+                📅 Prendre rendez-vous
+            </a>
+            <a href="{{ path('app_reservation_mes_reservations') }}" class="btn btn-outline-primary btn-lg">
+                📋 Voir mes rendez-vous
+            </a>
+        </div>
     {% endif %}
+
+    <style>
+        .hover-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .hover-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+        }
+        .hover-card:hover .display-1 {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+    </style>
 {% endblock %}

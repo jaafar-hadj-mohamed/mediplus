@@ -1,0 +1,71 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouveau Service{% endblock %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_service_index') }}">Services</a></li>
+            <li class="breadcrumb-item active">Nouveau service</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Créer un nouveau service</h4>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+
+                    <div class="mb-4">
+                        {{ form_label(form.nom) }}
+                        {{ form_widget(form.nom) }}
+                        {{ form_errors(form.nom) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                        {{ form_errors(form.description) }}
+                        <small class="text-muted">Décrivez précisément ce service pour vos patients</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.duree) }}
+                            {{ form_widget(form.duree) }}
+                            {{ form_errors(form.duree) }}
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.prix) }}
+                            {{ form_widget(form.prix) }}
+                            {{ form_errors(form.prix) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        {{ form_widget(form.actif) }}
+                        {{ form_label(form.actif) }}
+                        {{ form_errors(form.actif) }}
+                        <small class="d-block text-muted">Un service inactif ne sera pas visible par les patients</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> Créer le service
+                        </button>
+                        <a href="{{ path('admin_service_index') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

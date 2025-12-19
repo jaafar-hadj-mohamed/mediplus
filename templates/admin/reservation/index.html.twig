@@ -1,0 +1,115 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Réservations{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">📅 Gestion des Réservations</h1>
+    </div>
+
+    <!-- Filtres rapides -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary active" onclick="filterReservations('all')">
+                    Toutes ({{ reservations|length }})
+                </button>
+                <button type="button" class="btn btn-outline-warning" onclick="filterReservations('en_attente')">
+                    En attente
+                </button>
+                <button type="button" class="btn btn-outline-success" onclick="filterReservations('confirme')">
+                    Confirmées
+                </button>
+                <button type="button" class="btn btn-outline-danger" onclick="filterReservations('annule')">
+                    Annulées
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="filterReservations('termine')">
+                    Terminées
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des réservations -->
+    {% if reservations is empty %}
+        <div class="alert alert-info text-center">
+            Aucune réservation pour le moment.
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date demande</th>
+                            <th>Patient</th>
+                            <th>Service</th>
+                            <th>RDV prévu</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for reservation in reservations %}
+                            <tr class="reservation-row" data-statut="{{ reservation.statut }}">
+                                <td><strong>#{{ reservation.id }}</strong></td>
+                                <td>{{ reservation.createdAt|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <strong>{{ reservation.user.prenom }} {{ reservation.user.nom }}</strong><br>
+                                    <small class="text-muted">{{ reservation.user.email }}</small>
+                                </td>
+                                <td>
+                                    {{ reservation.service.nom }}<br>
+                                    <small class="text-muted">{{ reservation.service.duree }} min - {{ reservation.service.prix }} TND</small>
+                                </td>
+                                <td>
+                                    <strong>{{ reservation.dateReservation|date('d/m/Y') }}</strong><br>
+                                    <small class="text-muted">{{ reservation.heureReservation|date('H:i') }}</small>
+                                </td>
+                                <td>
+                                    {% if reservation.statut == 'en_attente' %}
+                                        <span class="badge bg-warning text-dark">⏳ En attente</span>
+                                    {% elseif reservation.statut == 'confirme' %}
+                                        <span class="badge bg-success">✅ Confirmé</span>
+                                    {% elseif reservation.statut == 'annule' %}
+                                        <span class="badge bg-danger">❌ Annulé</span>
+                                    {% elseif reservation.statut == 'termine' %}
+                                        <span class="badge bg-secondary">✔️ Terminé</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_reservation_show', {id: reservation.id}) }}"
+                                       class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> Voir
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <script>
+        function filterReservations(statut) {
+            const rows = document.querySelectorAll('.reservation-row');
+            const buttons = document.querySelectorAll('.btn-group button');
+
+            // Réinitialiser les boutons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            rows.forEach(row => {
+                if (statut === 'all') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.dataset.statut === statut ? '' : 'none';
+                }
+            });
+        }
+    </script>
+{% endblock %}
