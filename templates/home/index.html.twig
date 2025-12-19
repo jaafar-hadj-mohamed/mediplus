@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - MediPlus{% endblock %}
+
+{% block body %}
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-primary">🏥 Bienvenue sur MediPlus</h1>
+        <p class="lead text-muted">Votre cabinet médical en ligne</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 text-primary">📅</div>
+                    <h5 class="card-title mt-3">Prendre Rendez-vous</h5>
+                    <p class="card-text">Réservez facilement vos consultations en ligne</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 text-primary">👨‍⚕️</div>
+                    <h5 class="card-title mt-3">Services Médicaux</h5>
+                    <p class="card-text">Découvrez nos différentes consultations</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 text-primary">📋</div>
+                    <h5 class="card-title mt-3">Suivi Personnel</h5>
+                    <p class="card-text">Gérez vos rendez-vous et votre historique</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not app.user %}
+        <div class="text-center mt-5">
+            <h3 class="mb-4">Commencez dès maintenant !</h3>
+            <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg me-3">
+                Créer un compte
+            </a>
+            <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-lg">
+                Se connecter
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
